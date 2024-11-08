@@ -26,6 +26,12 @@ def addfilm(data):
     mydb.commit()
     return mycursor.rowcount
 
+def deletefilm(Id):
+    query = "DELETE FROM film WHERE Id = %s"
+    mycursor.execute(query, (Id,))
+    mydb.commit()
+    return mycursor.rowcount
+
 @app.route("/dati")
 def index():
     data = getAllData()
@@ -46,6 +52,15 @@ def add():
         return jsonify({'message': 'Film inserito con successo'}), 201 
     else:
         return jsonify({'message': 'Errore durante l inserimento'}), 500
+
+@app.route("/delete/<Id>", methods=["DELETE"])
+def delete(Id):
+    rows_deleted = deletefilm(Id)
+    if rows_deleted == 1:
+        return jsonify({'message': 'Film eliminato'}), 200
+    else:
+        return jsonify({'message': 'ID non trovato'}), 404
+
 
 if __name__ == "__main__":
     app.run()
